@@ -12,7 +12,7 @@
 
 - 引入`pom.xml`: 使用`springboot`官方提供的`start`
 
-```
+```xml
  <!--websocket-->
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -22,7 +22,7 @@
 
 - 添加一个 `websocket` 配置类
 
-```
+```java
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -48,7 +48,7 @@ public class WebSocketConfiguration {
 
 - 创建`websocket`核心处理类，用于处理连接和消息的相关操作
 
-```
+```java
 package com.haiskynology.mall.worldstreet.server.websocket;
 
 import lombok.NonNull;
@@ -184,7 +184,7 @@ redis引入依赖项和配置略过, 用springboot那一套
 
 - 推送消息时: 使用redis发布消息
 
-```
+```java
     /**
      * 接受消息
      */
@@ -196,7 +196,7 @@ redis引入依赖项和配置略过, 用springboot那一套
 
 - redis配置
 
-```
+```java
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -241,7 +241,7 @@ public class RedisConfig {
 
 - 信道消息监听器(订阅消息)
 
-```
+```java
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -289,7 +289,7 @@ public class RedisReceiver implements MessageListener {
 
 > [https://juejin.cn/post/7248918622693048379](https://juejin.cn/post/7248918622693048379)
 
-- 建立连接: 进入app时建立连接
+- 初次建立连接: 进入app时建立连接
 - 断开连接: 退出app时断开连接
 - 重连: 当意外断开连接时, 尝试重连 , 严格来说是每次网络连接后都重新连接websocket
 
@@ -301,7 +301,7 @@ public class RedisReceiver implements MessageListener {
 
 #### 客户端 -> 服务端
 
-```
+```js
 {
     "authorization": token, // token, 根据这个解析用户信息
     "path": "connect/hello", // 根据这个来执行不同的业务逻辑
@@ -321,7 +321,7 @@ public class RedisReceiver implements MessageListener {
 
 #### 服务端 -> 客户端
 
-```
+```js
 {
     "path": "group/message", // 根据这个来执行不同的业务逻辑
     "body": { // 参数
@@ -349,7 +349,7 @@ public class RedisReceiver implements MessageListener {
 
 两个成员之间可以私聊,对于私聊, 直接将成员id做为字段存在聊天室表里面
 
-```
+```sql
 create table private_room(
     ...
     member_type1 varchar(32) not null COMMENT '成员1类型, user-用户, shop-店铺', 
@@ -361,7 +361,7 @@ create table private_room(
 
 可以发起群聊,对于群聊,限制最大人数(500),将聊天室里面的成员单独放在另一个表里面
 
-```
+```sql
 create table room_member(
     ...
     room_id bigint unsigned not null, -- 所属聊天室id
@@ -382,7 +382,7 @@ create table room_member(
 
 - 一条消息对应一种消息类型, 用字段 `type` 区分, 字段 `content` 存具体内容
 
-```
+```js
 // 文本
   {
     "type": "text",
@@ -468,7 +468,7 @@ create table room_member(
 
 - 可能会存在返回数据规模过大的问题, 需要分页,前端下拉懒加载
 
-```
+```java
 SELECT 
     room_id,
     COUNT(message_id) AS unread_count, -- 消息个数
